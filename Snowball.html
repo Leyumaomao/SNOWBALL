@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>基岩版雪球菜单生成器</title>
+<style>
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    font-family: Arial, "Microsoft YaHei", sans-serif;
+    background: #111827;
+    color: #f3f4f6;
+}
+header {
+    padding: 18px 24px;
+    background: #1f2937;
+    border-bottom: 1px solid #374151;
+}
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+header p {
+    margin: 6px 0 0;
+    color: #9ca3af;
+}
+.app {
+    display: grid;
+    grid-template-columns: 360px 1fr 380px;
+    min-height: calc(100vh - 82px);
+}
+.panel {
+    padding: 18px;
+    border-right: 1px solid #374151;
+    overflow-y: auto;
+}
+.panel:last-child {
+    border-right: none;
+    border-left: 1px solid #374151;
+}
+h2 {
+    font-size: 17px;
+    margin: 5px 0 15px;
+}
+h3 {
+    font-size: 14px;
+    margin: 20px 0 10px;
+    color: #93c5fd;
+}
+label {
+    display: block;
+    font-size: 13px;
+    margin: 10px 0 5px;
+    color: #d1d5db;
+}
+input,
+select,
+textarea,
+button {
+    font: inherit;
+}
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 9px;
+    border-radius: 7px;
+    border: 1px solid #4b5563;
+    background: #111827;
+    color: white;
+    outline: none;
+}
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #60a5fa;
+}
+textarea {
+    min-height: 75px;
+    resize: vertical;
+}
+button {
+    border: 0;
+    border-radius: 7px;
+    padding: 9px 13px;
+    cursor: pointer;
+    color: white;
+    background: #2563eb;
+}
+button:hover {
+    filter: brightness(1.15);
+}
+button.danger {
+    background: #dc2626;
+}
+button.secondary {
+    background: #4b5563;
+}
+button.success {
+    background: #059669;
+}
+button.full {
+    width: 100%;
+    margin-top: 10px;
+}
+.option {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+.option-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.option-title {
+    font-weight: bold;
+}
+.option-buttons {
+    display: flex;
+    gap: 5px;
+}
+.option-buttons button {
+    padding: 5px 8px;
+}
+.color-row {
+    display: flex;
+    gap: 8px;
+}
+.color-row input[type="color"] {
+    width: 50px;
+    padding: 2px;
+    height: 38px;
+}
+.preview-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at center, #263449 0%, #111827 65%);
+    padding: 30px;
+}
+.mc-screen {
+    width: min(90%, 620px);
+    min-height: 300px;
+    background: rgba(0,0,0,.45);
+    border: 2px solid #555;
+    border-radius: 5px;
+    padding: 25px;
+    box-shadow: 0 0 35px rgba(0,0,0,.5);
+}
+.mc-title {
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+.menu-option {
+    padding: 9px 14px;
+    margin: 5px 0;
+    border-radius: 3px;
+    font-size: 18px;
+    white-space: pre;
+}
+.menu-option.selected {
+    background: rgba(255,255,255,.12);
+    outline: 1px solid rgba(255,255,255,.25);
+}
+.preview-info {
+    margin-top: 18px;
+    color: #9ca3af;
+    text-align: center;
+    font-size: 13px;
+}
+.command-output {
+    min-height: 420px;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.row {
+    display: flex;
+    gap: 8px;
+}
+.row > * {
+    flex: 1;
+}
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.checkbox input {
+    width: auto;
+}
+.badge {
+    display: inline-block;
+    padding: 3px 7px;
+    border-radius: 5px;
+    background: #374151;
+    font-size: 11px;
+    color: #d1d5db;
+}
+.empty {
+    text-align: center;
+    padding: 35px 10px;
+    color: #6b7280;
+    border: 1px dashed #4b5563;
+    border-radius: 8px;
+}
+@media(max-width:1100px) {
+    .app {
+        grid-template-columns: 1fr;
+    }
+    .panel {
+        border: 0;
+        border-bottom: 1px solid #374151;
+    }
+    .panel:last-child {
+        border-left: 0;
+    }
+}
+</style>
+</head>
+<body>
+<header>
+    <h1>❄️ 基岩版雪球菜单生成器</h1>
+    <p>自定义菜单、积分板、选项、颜色与 UI，并自动生成命令</p>
+</header>
+<div class="app">
+<!-- 左侧：设置 -->
+<section class="panel">
+<h2>⚙️ 菜单设置</h2>
+<label>菜单名称</label>
+<input id="menuName" value="雪球菜单">
+<label>积分板名称</label>
+<input id="scoreboard" value="snowmenu">
+<label>菜单显示方式</label>
+<select id="displayMode">
+    <option value="actionbar">Actionbar</option>
+    <option value="title">Title</option>
+    <option value="subtitle">Subtitle</option>
+    <option value="chat">聊天栏</option>
+</select>
+<label>菜单标题</label>
+<input id="menuTitle" value="§l§6雪球菜单">
+<label>选中颜色</label>
+<div class="color-row">
+    <input type="color" id="selectedColor" value="#55ff55">
+    <input id="selectedColorText" value="#55ff55">
+</div>
+<label>未选中颜色</label>
+<div class="color-row">
+    <input type="color" id="normalColor" value="#ffffff">
+    <input id="normalColorText" value="#ffffff">
+</div>
+<label>UI 分隔符</label>
+<input id="separator" value=" | ">
+<h3>🎮 操作设置</h3>
+<label class="checkbox">
+    <input type="checkbox" id="needSnowball" checked>
+    必须使用雪球
+</label>
+<label class="checkbox">
+    <input type="checkbox" id="autoClose" checked>
+    执行选项后关闭菜单
+</label>
+<label class="checkbox">
+    <input type="checkbox" id="showScore" checked>
+    显示当前积分
+</label>
+<button class="full success" onclick="addOption()">
+    ＋ 添加菜单选项
+</button>
+<button class="full secondary" onclick="generateCommands()">
+    🔄 重新生成命令
+</button>
+</section>
+<!-- 中间：菜单编辑 -->
+<section class="panel">
+<h2>📝 菜单选项</h2>
+<div id="options"></div>
+</section>
+<!-- 右侧：预览 + 命令 -->
+<section class="panel">
+<h2>👀 UI 实时预览</h2>
+<div class="mc-screen">
+    <div class="mc-title" id="previewTitle">
+        §l§6雪球菜单
+    </div>
+    <div id="previewOptions"></div>
+</div>
+<div class="preview-info">
+    点击 ↑ ↓ 可以调整选项顺序<br>
+    预览会随着设置自动更新
+</div>
+<h2 style="margin-top:30px;">📜 生成的命令</h2>
+<textarea id="commandOutput" class="command-output" readonly></textarea>
+<div class="row">
+    <button onclick="copyCommands()">📋 复制命令</button>
+    <button onclick="downloadHTML()">💾 保存配置</button>
+</div>
+</section>
+</div>
+<script>
+let options = [
+    {
+        name: "传送大厅",
+        order: 1,
+        color: "#55ff55",
+        score: 1,
+        command: "tp @s 100 64 100",
+        enabled: true
+    },
+    {
+        name: "玩家列表",
+        order: 2,
+        color: "#55ffff",
+        score: 2,
+        command: "list",
+        enabled: true
+    },
+    {
+        name: "设置",
+        order: 3,
+        color: "#ffff55",
+        score: 3,
+        command: "say 打开设置",
+        enabled: true
+    },
+    {
+        name: "关闭菜单",
+        order: 4,
+        color: "#ff5555",
+        score: 4,
+        command: "scoreboard players reset @s snowmenu",
+        enabled: true
+    }
+];
+let selected = 0;
+/* =========================
+   初始化
+========================= */
+function renderOptions() {
+    const box = document.getElementById("options");
+    box.innerHTML = "";
+    if(options.length === 0) {
+        box.innerHTML =
+            `<div class="empty">
+                暂无菜单选项<br><br>
+                点击“添加菜单选项”
+            </div>`;
+        updatePreview();
+        return;
+    }
+    options.forEach((opt,index)=>{
+        const div = document.createElement("div");
+        div.className = "option";
+        div.innerHTML = `
+            <div class="option-header">
+                <div class="option-title">
+                    ${index + 1}. ${escapeHTML(opt.name)}
+                </div>
+                <div class="option-buttons">
+                    <button
+                        onclick="moveOption(${index},-1)"
+                        ${index===0?"disabled":""}>
+                        ↑
+                    </button>
+                    <button
+                        onclick="moveOption(${index},1)"
+                        ${index===options.length-1?"disabled":""}>
+                        ↓
+                    </button>
+                    <button
+                        class="danger"
+                        onclick="deleteOption(${index})">
+                        ×
+                    </button>
+                </div>
+            </div>
+            <label>选项名称</label>
+            <input
+                value="${escapeAttr(opt.name)}"
+                oninput="updateOption(${index},'name',this.value)">
+            <div class="row">
+                <div>
+                    <label>选项顺序</label>
+                    <input
+                        type="number"
+                        min="1"
+                        value="${opt.order}"
+                        oninput="updateOption(${index},'order',Number(this.value))">
+                </div>
+                <div>
+                    <label>积分板分数</label>
+                    <input
+                        type="number"
+                        value="${opt.score}"
+                        oninput="updateOption(${index},'score',Number(this.value))">
+                </div>
+            </div>
+            <label>选项颜色</label>
+            <div class="color-row">
+                <input
+                    type="color"
+                    value="${opt.color}"
+                    oninput="updateOption(${index},'color',this.value)">
+                <input
+                    value="${opt.color}"
+                    oninput="updateOption(${index},'color',this.value)">
+            </div>
+            <label>执行指令</label>
+            <textarea
+                oninput="updateOption(${index},'command',this.value)"
+            >${escapeHTML(opt.command)}</textarea>
+            <label class="checkbox">
+                <input
+                    type="checkbox"
+                    ${opt.enabled ? "checked" : ""}
+                    onchange="updateOption(${index},'enabled',this.checked)">
+                启用此选项
+            </label>
+        `;
+        box.appendChild(div);
+    });
+    updatePreview();
+}
+/* =========================
+   添加选项
+========================= */
+function addOption(){
+    const score = options.length + 1;
+    options.push({
+        name: "新选项",
+        order: score,
+        color: "#ffffff",
+        score: score,
+        command: "say 你选择了新选项",
+        enabled: true
+    });
+    selected = options.length - 1;
+    renderOptions();
+}
+/* =========================
+   删除
+========================= */
+function deleteOption(index){
+    if(!confirm("确定删除这个菜单选项吗？"))
+        return;
+    options.splice(index,1);
+    renderOptions();
+}
+/* =========================
+   移动
+========================= */
+function moveOption(index,direction){
+    const newIndex = index + direction;
+    if(newIndex < 0 || newIndex >= options.length)
+        return;
+    const temp = options[index];
+    options[index] = options[newIndex];
+    options[newIndex] = temp;
+    options.forEach((o,i)=>{
+        o.order = i + 1;
+    });
+    renderOptions();
+}
+/* =========================
+   修改
+========================= */
+function updateOption(index,key,value){
+    options[index][key] = value;
+    updatePreview();
+}
+/* =========================
+   UI预览
+========================= */
+function updatePreview(){
+    document.getElementById("previewTitle").textContent =
+        document.getElementById("menuTitle").value;
+    const box =
+        document.getElementById("previewOptions");
+    box.innerHTML = "";
+    const normal =
+        document.getElementById("normalColor").value;
+    const selectedColor =
+        document.getElementById("selectedColor").value;
+    options
+        .filter(o=>o.enabled)
+        .forEach((opt,index)=>{
+            const div =
+                document.createElement("div");
+            div.className =
+                "menu-option " +
+                (index===selected ? "selected" : "");
+            div.textContent =
+                (index===selected ? "▶ " : "  ") +
+                opt.name;
+            div.style.color =
+                index===selected
+                ? selectedColor
+                : opt.color || normal;
+            div.onclick = ()=>{
+                selected = index;
+                updatePreview();
+            };
+            box.appendChild(div);
+        });
+}
+/* =========================
+   生成命令
+========================= */
+function generateCommands(){
+    const scoreboard =
+        document.getElementById("scoreboard").value.trim()
+        || "snowmenu";
+    const title =
+        document.getElementById("menuTitle").value;
+    const display =
+        document.getElementById("displayMode").value;
+    const needSnowball =
+        document.getElementById("needSnowball").checked;
+    const autoClose =
+        document.getElementById("autoClose").checked;
+    let commands = [];
+    commands.push(
+        "# ========================================"
+    );
+    commands.push(
+        "# 基岩版雪球菜单生成器"
+    );
+    commands.push(
+        "# 菜单：" +
+        document.getElementById("menuName").value
+    );
+    commands.push(
+        "# ========================================"
+    );
+    commands.push("");
+    commands.push(
+        "# 创建积分板"
+    );
+    commands.push(
+        `scoreboard objectives add ${scoreboard} dummy`
+    );
+    commands.push("");
+    commands.push(
+        "# 初始化菜单"
+    );
+    commands.push(
+        `scoreboard players set @a ${scoreboard} 0`
+    );
+    commands.push("");
+    if(needSnowball){
+        commands.push(
+            "# 检测雪球"
+        );
+        commands.push(
+            `execute as @e[type=snowball] at @s run scoreboard players set @p ${scoreboard} 1`
+        );
+        commands.push("");
+    }
+    commands.push("# ========================================");
+    commands.push("# UI显示");
+    commands.push("# ========================================");
+    options
+        .filter(o=>o.enabled)
+        .forEach((opt,index)=>{
+            const text =
+                `§${minecraftColor(opt.color)}${opt.name}`;
+            if(display === "actionbar"){
+                commands.push(
+                    `execute as @a[scores={${scoreboard}=${opt.score}}] run titleraw @s actionbar {"rawtext":[{"text":"${escapeJSON(title)}\\n${escapeJSON(text)}"}]}`
+                );
+            }
+            else if(display === "title"){
+                commands.push(
+                    `execute as @a[scores={${scoreboard}=${opt.score}}] run titleraw @s title {"rawtext":[{"text":"${escapeJSON(text)}"}]}`
+                );
+            }
+            else if(display === "subtitle"){
+                commands.push(
+                    `execute as @a[scores={${scoreboard}=${opt.score}}] run titleraw @s subtitle {"rawtext":[{"text":"${escapeJSON(text)}"}]}`
+                );
+            }
+            else {
+                commands.push(
+                    `execute as @a[scores={${scoreboard}=${opt.score}}] run tellraw @s {"rawtext":[{"text":"${escapeJSON(text)}"}]}`
+                );
+            }
+        });
+    commands.push("");
+    commands.push("# ========================================");
+    commands.push("# 选项执行");
+    commands.push("# ========================================");
+    options
+        .filter(o=>o.enabled)
+        .forEach(opt=>{
+            let command =
+                opt.command.trim();
+            if(command.startsWith("/"))
+                command = command.substring(1);
+            commands.push(
+                `execute as @a[scores={${scoreboard}=${opt.score}}] run ${command}`
+            );
+            if(autoClose){
+                commands.push(
+                    `execute as @a[scores={${scoreboard}=${opt.score}}] run scoreboard players set @s ${scoreboard} 0`
+                );
+            }
+        });
+    commands.push("");
+    commands.push("# ========================================");
+    commands.push("# 完成");
+    commands.push("# ========================================");
+    document.getElementById("commandOutput").value =
+        commands.join("\n");
+}
+/* =========================
+   复制
+========================= */
+function copyCommands(){
+    generateCommands();
+    const text =
+        document.getElementById("commandOutput").value;
+    navigator.clipboard.writeText(text)
+        .then(()=>{
+            alert("命令已经复制！");
+        })
+        .catch(()=>{
+            alert("复制失败，请手动复制。");
+        });
+}
+/* =========================
+   保存配置
+========================= */
+function downloadHTML(){
+    const data = {
+        menuName:
+            document.getElementById("menuName").value,
+        scoreboard:
+            document.getElementById("scoreboard").value,
+        displayMode:
+            document.getElementById("displayMode").value,
+        menuTitle:
+            document.getElementById("menuTitle").value,
+        options: options
+    };
+    const blob =
+        new Blob(
+            [JSON.stringify(data,null,2)],
+            {type:"application/json"}
+        );
+    const url =
+        URL.createObjectURL(blob);
+    const a =
+        document.createElement("a");
+    a.href = url;
+    a.download =
+        "雪球菜单配置.json";
+    a.click();
+    URL.revokeObjectURL(url);
+}
+/* =========================
+   Minecraft颜色转换
+========================= */
+function minecraftColor(hex){
+    const colors = {
+        "000000":"0",
+        "0000AA":"1",
+        "00AA00":"2",
+        "00AAAA":"3",
+        "AA0000":"4",
+        "AA00AA":"5",
+        "FFAA00":"6",
+        "AAAAAA":"7",
+        "555555":"8",
+        "5555FF":"9",
+        "55FF55":"a",
+        "55FFFF":"b",
+        "FF5555":"c",
+        "FF55FF":"d",
+        "FFFF55":"e",
+        "FFFFFF":"f"
+    };
+    const h =
+        hex.replace("#","").toUpperCase();
+    if(colors[h])
+        return colors[h];
+    return "f";
+}
+/* =========================
+   HTML转义
+========================= */
+function escapeHTML(str){
+    return String(str)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
+}
+function escapeAttr(str){
+    return escapeHTML(str)
+        .replace(/'/g,"&#39;");
+}
+function escapeJSON(str){
+    return String(str)
+        .replace(/\\/g,"\\\\")
+        .replace(/"/g,'\\"')
+        .replace(/\n/g,"\\n")
+        .replace(/\r/g,"");
+}
+/* =========================
+   设置监听
+========================= */
+[
+    "menuName",
+    "scoreboard",
+    "displayMode",
+    "menuTitle",
+    "selectedColor",
+    "normalColor",
+    "separator",
+    "needSnowball",
+    "autoClose",
+    "showScore"
+].forEach(id=>{
+    const el =
+        document.getElementById(id);
+    el.addEventListener("input",()=>{
+        updatePreview();
+    });
+    el.addEventListener("change",()=>{
+        updatePreview();
+    });
+});
+document
+    .getElementById("selectedColor")
+    .addEventListener("input",function(){
+        document.getElementById("selectedColorText").value =
+            this.value;
+    });
+document
+    .getElementById("normalColor")
+    .addEventListener("input",function(){
+        document.getElementById("normalColorText").value =
+            this.value;
+    });
+renderOptions();
+generateCommands();
+</script>
+</body>
+</html>
