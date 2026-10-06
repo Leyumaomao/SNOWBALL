@@ -2,230 +2,268 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>基岩版雪球菜单生成器</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>基岩版雪球菜单生成器 v2</title>
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+    margin:0;
+    background:#0b1020;
+    color:#f3f4f6;
+    font-family:Arial,"Microsoft YaHei",sans-serif;
 }
-body {
-    margin: 0;
-    font-family: Arial, "Microsoft YaHei", sans-serif;
-    background: #111827;
-    color: #f3f4f6;
+header{
+    height:72px;
+    padding:15px 22px;
+    background:#151c31;
+    border-bottom:1px solid #303a55;
 }
-header {
-    padding: 18px 24px;
-    background: #1f2937;
-    border-bottom: 1px solid #374151;
+header h1{
+    margin:0;
+    font-size:22px;
 }
-header h1 {
-    margin: 0;
-    font-size: 24px;
+header p{
+    margin:4px 0 0;
+    color:#94a3b8;
+    font-size:13px;
 }
-header p {
-    margin: 6px 0 0;
-    color: #9ca3af;
+.layout{
+    display:grid;
+    grid-template-columns:300px minmax(400px,1fr) 420px;
+    height:calc(100vh - 72px);
 }
-.app {
-    display: grid;
-    grid-template-columns: 360px 1fr 380px;
-    min-height: calc(100vh - 82px);
+.sidebar,
+.editor,
+.preview{
+    overflow:auto;
+    padding:18px;
 }
-.panel {
-    padding: 18px;
-    border-right: 1px solid #374151;
-    overflow-y: auto;
+.sidebar{
+    background:#10172a;
+    border-right:1px solid #303a55;
 }
-.panel:last-child {
-    border-right: none;
-    border-left: 1px solid #374151;
+.editor{
+    background:#0d1324;
 }
-h2 {
-    font-size: 17px;
-    margin: 5px 0 15px;
+.preview{
+    background:#10172a;
+    border-left:1px solid #303a55;
 }
-h3 {
-    font-size: 14px;
-    margin: 20px 0 10px;
-    color: #93c5fd;
+h2{
+    font-size:17px;
+    margin:3px 0 15px;
 }
-label {
-    display: block;
-    font-size: 13px;
-    margin: 10px 0 5px;
-    color: #d1d5db;
+h3{
+    color:#93c5fd;
+    font-size:14px;
+    margin:20px 0 10px;
+}
+label{
+    display:block;
+    margin:9px 0 5px;
+    font-size:13px;
+    color:#cbd5e1;
 }
 input,
 select,
-textarea,
-button {
-    font: inherit;
+textarea{
+    width:100%;
+    padding:9px 10px;
+    border-radius:7px;
+    border:1px solid #39445f;
+    background:#080d19;
+    color:white;
+    outline:none;
 }
-input,
-select,
-textarea {
-    width: 100%;
-    padding: 9px;
-    border-radius: 7px;
-    border: 1px solid #4b5563;
-    background: #111827;
-    color: white;
-    outline: none;
+textarea{
+    min-height:100px;
+    resize:vertical;
+    font-family:Consolas,monospace;
 }
 input:focus,
 select:focus,
-textarea:focus {
-    border-color: #60a5fa;
+textarea:focus{
+    border-color:#60a5fa;
 }
-textarea {
-    min-height: 75px;
-    resize: vertical;
+button{
+    border:0;
+    border-radius:7px;
+    padding:9px 12px;
+    color:white;
+    background:#2563eb;
+    cursor:pointer;
 }
-button {
-    border: 0;
-    border-radius: 7px;
-    padding: 9px 13px;
-    cursor: pointer;
-    color: white;
-    background: #2563eb;
+button:hover{
+    filter:brightness(1.12);
 }
-button:hover {
-    filter: brightness(1.15);
+button.secondary{
+    background:#374151;
 }
-button.danger {
-    background: #dc2626;
+button.success{
+    background:#059669;
 }
-button.secondary {
-    background: #4b5563;
+button.danger{
+    background:#dc2626;
 }
-button.success {
-    background: #059669;
+button.full{
+    width:100%;
+    margin-top:9px;
 }
-button.full {
-    width: 100%;
-    margin-top: 10px;
+.mode{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:5px;
+    margin-bottom:18px;
 }
-.option {
-    background: #1f2937;
-    border: 1px solid #374151;
-    border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 12px;
+.mode button{
+    padding:8px 4px;
+    background:#263149;
+    font-size:12px;
 }
-.option-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 10px;
+.mode button.active{
+    background:#2563eb;
 }
-.option-title {
-    font-weight: bold;
+.category{
+    margin-bottom:15px;
 }
-.option-buttons {
-    display: flex;
-    gap: 5px;
+.category-title{
+    padding:9px 10px;
+    background:#1b253c;
+    border-radius:7px;
+    color:#dbeafe;
+    font-size:13px;
+    font-weight:bold;
 }
-.option-buttons button {
-    padding: 5px 8px;
+.function{
+    padding:9px 10px;
+    margin-top:5px;
+    border-radius:7px;
+    background:#151e34;
+    border:1px solid transparent;
+    cursor:pointer;
+    font-size:13px;
 }
-.color-row {
-    display: flex;
-    gap: 8px;
+.function:hover{
+    border-color:#3b82f6;
+    background:#1d2945;
 }
-.color-row input[type="color"] {
-    width: 50px;
-    padding: 2px;
-    height: 38px;
+.card{
+    background:#151e34;
+    border:1px solid #303a55;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:13px;
 }
-.preview-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background:
-        radial-gradient(circle at center, #263449 0%, #111827 65%);
-    padding: 30px;
+.card-title{
+    font-weight:bold;
+    margin-bottom:12px;
 }
-.mc-screen {
-    width: min(90%, 620px);
-    min-height: 300px;
-    background: rgba(0,0,0,.45);
-    border: 2px solid #555;
-    border-radius: 5px;
-    padding: 25px;
-    box-shadow: 0 0 35px rgba(0,0,0,.5);
+.row{
+    display:flex;
+    gap:8px;
 }
-.mc-title {
-    text-align: center;
-    font-size: 25px;
-    font-weight: bold;
-    margin-bottom: 25px;
+.row>*{
+    flex:1;
 }
-.menu-option {
-    padding: 9px 14px;
-    margin: 5px 0;
-    border-radius: 3px;
-    font-size: 18px;
-    white-space: pre;
+.option-card{
+    background:#151e34;
+    border:1px solid #303a55;
+    border-radius:10px;
+    padding:13px;
+    margin-bottom:12px;
 }
-.menu-option.selected {
-    background: rgba(255,255,255,.12);
-    outline: 1px solid rgba(255,255,255,.25);
+.option-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
 }
-.preview-info {
-    margin-top: 18px;
-    color: #9ca3af;
-    text-align: center;
-    font-size: 13px;
+.option-number{
+    color:#60a5fa;
+    font-weight:bold;
 }
-.command-output {
-    min-height: 420px;
-    font-family: Consolas, monospace;
-    font-size: 12px;
-    line-height: 1.5;
+.option-actions{
+    display:flex;
+    gap:4px;
 }
-.row {
-    display: flex;
-    gap: 8px;
+.option-actions button{
+    padding:5px 8px;
 }
-.row > * {
-    flex: 1;
+.tip{
+    background:#17223a;
+    border-left:3px solid #3b82f6;
+    padding:9px;
+    margin:10px 0;
+    color:#b7c5dc;
+    font-size:12px;
+    line-height:1.5;
 }
-.checkbox {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.checkbox{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
 }
-.checkbox input {
-    width: auto;
+.checkbox input{
+    width:auto;
 }
-.badge {
-    display: inline-block;
-    padding: 3px 7px;
-    border-radius: 5px;
-    background: #374151;
-    font-size: 11px;
-    color: #d1d5db;
+.mc{
+    background:#111;
+    border:2px solid #555;
+    border-radius:5px;
+    padding:20px;
+    min-height:280px;
+    box-shadow:0 10px 35px #0008;
 }
-.empty {
-    text-align: center;
-    padding: 35px 10px;
-    color: #6b7280;
-    border: 1px dashed #4b5563;
-    border-radius: 8px;
+.mc-title{
+    text-align:center;
+    font-weight:bold;
+    font-size:22px;
+    margin-bottom:20px;
 }
-@media(max-width:1100px) {
-    .app {
-        grid-template-columns: 1fr;
+.mc-item{
+    padding:7px 10px;
+    margin:4px 0;
+    font-family:monospace;
+    font-size:16px;
+    border-radius:3px;
+}
+.mc-item.selected{
+    background:#ffffff18;
+    outline:1px solid #ffffff35;
+}
+.preview-box{
+    margin-bottom:20px;
+}
+.output{
+    min-height:300px;
+    font-size:11px;
+    line-height:1.45;
+}
+.badge{
+    display:inline-block;
+    padding:3px 7px;
+    border-radius:5px;
+    background:#334155;
+    font-size:11px;
+}
+.hidden{
+    display:none;
+}
+@media(max-width:1100px){
+    .layout{
+        grid-template-columns:1fr;
+        height:auto;
     }
-    .panel {
-        border: 0;
-        border-bottom: 1px solid #374151;
+    .sidebar,
+    .preview{
+        border:0;
     }
-    .panel:last-child {
-        border-left: 0;
+    .sidebar{
+        border-bottom:1px solid #303a55;
+    }
+    .preview{
+        border-top:1px solid #303a55;
     }
 }
 </style>
@@ -233,474 +271,760 @@ button.full {
 <body>
 <header>
     <h1>❄️ 基岩版雪球菜单生成器</h1>
-    <p>自定义菜单、积分板、选项、颜色与 UI，并自动生成命令</p>
+    <p>可视化创建雪球菜单，不需要先学会复杂的基岩版命令</p>
 </header>
-<div class="app">
-<!-- 左侧：设置 -->
-<section class="panel">
+<div class="layout">
+<!-- ================= 左侧功能库 ================= -->
+<aside class="sidebar">
+<h2>🧩 功能库</h2>
+<div class="mode">
+    <button class="active" onclick="setMode('beginner',this)">🟢 新手</button>
+    <button onclick="setMode('advanced',this)">🔵 高级</button>
+    <button onclick="setMode('expert',this)">🔴 专家</button>
+</div>
+<div class="tip">
+新手模式只需要选择功能和填写简单设置。
+生成器会自动生成底层命令。
+</div>
+<div class="category">
+<div class="category-title">👤 玩家功能</div>
+<div class="function" onclick="addFeature('teleport')">
+🔄 互相传送
+</div>
+<div class="function" onclick="addFeature('teleportToPlayer')">
+📍 传送到玩家
+</div>
+<div class="function" onclick="addFeature('heal')">
+❤️ 治疗玩家
+</div>
+<div class="function" onclick="addFeature('clearEffects')">
+✨ 清除玩家效果
+</div>
+<div class="function" onclick="addFeature('gamemode')">
+🎮 切换游戏模式
+</div>
+</div>
+<div class="category">
+<div class="category-title">🌎 世界功能</div>
+<div class="function" onclick="addFeature('day')">
+☀️ 设置白天
+</div>
+<div class="function" onclick="addFeature('night')">
+🌙 设置夜晚
+</div>
+<div class="function" onclick="addFeature('clearWeather')">
+☀️ 晴朗天气
+</div>
+<div class="function" onclick="addFeature('rain')">
+🌧️ 下雨
+</div>
+</div>
+<div class="category">
+<div class="category-title">✨ 特效</div>
+<div class="function" onclick="addFeature('sound')">
+🔊 播放声音
+</div>
+<div class="function" onclick="addFeature('particle')">
+✨ 播放粒子
+</div>
+<div class="function" onclick="addFeature('message')">
+💬 发送消息
+</div>
+</div>
+<div class="category">
+<div class="category-title">⚙️ 管理</div>
+<div class="function" onclick="addFeature('kick')">
+🚪 踢出玩家
+</div>
+<div class="function" onclick="addFeature('tag')">
+🏷️ 添加玩家标签
+</div>
+</div>
+</aside>
+<!-- ================= 中间编辑器 ================= -->
+<main class="editor">
 <h2>⚙️ 菜单设置</h2>
+<div class="card">
 <label>菜单名称</label>
-<input id="menuName" value="雪球菜单">
+<input id="menuName" value="我的雪球菜单">
 <label>积分板名称</label>
 <input id="scoreboard" value="snowmenu">
-<label>菜单显示方式</label>
-<select id="displayMode">
-    <option value="actionbar">Actionbar</option>
-    <option value="title">Title</option>
-    <option value="subtitle">Subtitle</option>
-    <option value="chat">聊天栏</option>
-</select>
 <label>菜单标题</label>
 <input id="menuTitle" value="§l§6雪球菜单">
+<div class="row">
+<div>
+<label>显示方式</label>
+<select id="displayMode">
+<option value="actionbar">Actionbar</option>
+<option value="title">Title</option>
+<option value="subtitle">Subtitle</option>
+<option value="chat">聊天栏</option>
+</select>
+</div>
+<div>
+<label>菜单位置</label>
+<select id="position">
+<option>中央</option>
+<option>顶部</option>
+<option>底部</option>
+</select>
+</div>
+</div>
 <label>选中颜色</label>
-<div class="color-row">
-    <input type="color" id="selectedColor" value="#55ff55">
-    <input id="selectedColorText" value="#55ff55">
-</div>
+<input type="color" id="selectedColor" value="#55ff55">
 <label>未选中颜色</label>
-<div class="color-row">
-    <input type="color" id="normalColor" value="#ffffff">
-    <input id="normalColorText" value="#ffffff">
+<input type="color" id="normalColor" value="#ffffff">
+<label class="checkbox">
+<input type="checkbox" id="autoClose" checked>
+执行功能后自动关闭菜单
+</label>
 </div>
-<label>UI 分隔符</label>
-<input id="separator" value=" | ">
-<h3>🎮 操作设置</h3>
-<label class="checkbox">
-    <input type="checkbox" id="needSnowball" checked>
-    必须使用雪球
-</label>
-<label class="checkbox">
-    <input type="checkbox" id="autoClose" checked>
-    执行选项后关闭菜单
-</label>
-<label class="checkbox">
-    <input type="checkbox" id="showScore" checked>
-    显示当前积分
-</label>
-<button class="full success" onclick="addOption()">
-    ＋ 添加菜单选项
-</button>
-<button class="full secondary" onclick="generateCommands()">
-    🔄 重新生成命令
-</button>
-</section>
-<!-- 中间：菜单编辑 -->
-<section class="panel">
 <h2>📝 菜单选项</h2>
 <div id="options"></div>
-</section>
-<!-- 右侧：预览 + 命令 -->
-<section class="panel">
-<h2>👀 UI 实时预览</h2>
-<div class="mc-screen">
-    <div class="mc-title" id="previewTitle">
-        §l§6雪球菜单
-    </div>
-    <div id="previewOptions"></div>
+<button class="full success" onclick="addCustomOption()">
+＋ 添加自定义选项
+</button>
+</main>
+<!-- ================= 右侧 ================= -->
+<aside class="preview">
+<h2>👀 UI预览</h2>
+<div class="preview-box">
+<div class="mc">
+<div class="mc-title" id="previewTitle">
+§l§6雪球菜单
 </div>
-<div class="preview-info">
-    点击 ↑ ↓ 可以调整选项顺序<br>
-    预览会随着设置自动更新
+<div id="previewOptions"></div>
 </div>
-<h2 style="margin-top:30px;">📜 生成的命令</h2>
-<textarea id="commandOutput" class="command-output" readonly></textarea>
+</div>
+<h2>📜 命令生成</h2>
+<button class="full" onclick="generateCommands()">
+🔄 生成全部命令
+</button>
+<textarea id="output" class="output" readonly></textarea>
 <div class="row">
-    <button onclick="copyCommands()">📋 复制命令</button>
-    <button onclick="downloadHTML()">💾 保存配置</button>
+<button onclick="copyCommands()">
+📋 复制
+</button>
+<button class="secondary" onclick="downloadConfig()">
+💾 导出配置
+</button>
 </div>
-</section>
+</aside>
 </div>
 <script>
-let options = [
-    {
-        name: "传送大厅",
-        order: 1,
-        color: "#55ff55",
-        score: 1,
-        command: "tp @s 100 64 100",
-        enabled: true
-    },
-    {
-        name: "玩家列表",
-        order: 2,
-        color: "#55ffff",
-        score: 2,
-        command: "list",
-        enabled: true
-    },
-    {
-        name: "设置",
-        order: 3,
-        color: "#ffff55",
-        score: 3,
-        command: "say 打开设置",
-        enabled: true
-    },
-    {
-        name: "关闭菜单",
-        order: 4,
-        color: "#ff5555",
-        score: 4,
-        command: "scoreboard players reset @s snowmenu",
-        enabled: true
-    }
-];
+/* =========================================================
+   全局数据
+========================================================= */
+let mode = "beginner";
 let selected = 0;
-/* =========================
-   初始化
-========================= */
-function renderOptions() {
-    const box = document.getElementById("options");
-    box.innerHTML = "";
-    if(options.length === 0) {
-        box.innerHTML =
-            `<div class="empty">
-                暂无菜单选项<br><br>
-                点击“添加菜单选项”
-            </div>`;
+let options = [];
+/* =========================================================
+   功能定义
+========================================================= */
+const featureNames = {
+    teleport:"互相传送",
+    teleportToPlayer:"传送到玩家",
+    heal:"治疗玩家",
+    clearEffects:"清除玩家效果",
+    gamemode:"切换游戏模式",
+    day:"设置白天",
+    night:"设置夜晚",
+    clearWeather:"晴朗天气",
+    rain:"下雨",
+    sound:"播放声音",
+    particle:"播放粒子",
+    message:"发送消息",
+    kick:"踢出玩家",
+    tag:"添加玩家标签"
+};
+/* =========================================================
+   模式
+========================================================= */
+function setMode(newMode,button){
+    mode = newMode;
+    document.querySelectorAll(".mode button")
+        .forEach(b=>b.classList.remove("active"));
+    button.classList.add("active");
+    renderOptions();
+}
+/* =========================================================
+   添加功能
+========================================================= */
+function addFeature(type){
+    const obj = {
+        name:featureNames[type] || "新功能",
+        type:type,
+        order:options.length+1,
+        score:options.length+1,
+        color:"#55ff55",
+        enabled:true,
+        command:""
+    };
+    if(type==="teleport"){
+        obj.settings={
+            method:"request",
+            target:"@p",
+            confirm:true,
+            timeout:30,
+            success:"§a传送成功！",
+            fail:"§c找不到目标玩家！"
+        };
+    }
+    if(type==="teleportToPlayer"){
+        obj.settings={
+            target:"@p"
+        };
+    }
+    if(type==="heal"){
+        obj.settings={
+            target:"@s"
+        };
+    }
+    if(type==="gamemode"){
+        obj.settings={
+            mode:"survival"
+        };
+    }
+    if(type==="sound"){
+        obj.settings={
+            sound:"random.levelup"
+        };
+    }
+    if(type==="message"){
+        obj.settings={
+            message:"§a你好！"
+        };
+    }
+    if(type==="tag"){
+        obj.settings={
+            tag:"special"
+        };
+    }
+    options.push(obj);
+    selected=options.length-1;
+    renderOptions();
+}
+/* =========================================================
+   自定义
+========================================================= */
+function addCustomOption(){
+    options.push({
+        name:"自定义功能",
+        type:"custom",
+        order:options.length+1,
+        score:options.length+1,
+        color:"#ffffff",
+        enabled:true,
+        command:"say 你好"
+    });
+    selected=options.length-1;
+    renderOptions();
+}
+/* =========================================================
+   删除
+========================================================= */
+function deleteOption(index){
+    if(!confirm("确定删除这个选项吗？"))
+        return;
+    options.splice(index,1);
+    normalizeOrders();
+    renderOptions();
+}
+/* =========================================================
+   上下移动
+========================================================= */
+function moveOption(index,direction){
+    let target=index+direction;
+    if(target<0 || target>=options.length)
+        return;
+    [options[index],options[target]]
+    =
+    [options[target],options[index]];
+    normalizeOrders();
+    selected=target;
+    renderOptions();
+}
+/* =========================================================
+   自动排序
+========================================================= */
+function normalizeOrders(){
+    options.forEach((o,i)=>{
+        o.order=i+1;
+        if(!o.score)
+            o.score=i+1;
+    });
+}
+/* =========================================================
+   编辑选项
+========================================================= */
+function update(index,key,value){
+    options[index][key]=value;
+    updatePreview();
+    generateCommands();
+}
+/* =========================================================
+   渲染选项
+========================================================= */
+function renderOptions(){
+    const box=document.getElementById("options");
+    box.innerHTML="";
+    if(options.length===0){
+        box.innerHTML=`
+        <div class="card">
+        <div class="tip">
+        还没有菜单选项。<br><br>
+        从左侧功能库选择一个功能即可添加。
+        </div>
+        </div>`;
         updatePreview();
         return;
     }
     options.forEach((opt,index)=>{
-        const div = document.createElement("div");
-        div.className = "option";
-        div.innerHTML = `
-            <div class="option-header">
-                <div class="option-title">
-                    ${index + 1}. ${escapeHTML(opt.name)}
-                </div>
-                <div class="option-buttons">
-                    <button
-                        onclick="moveOption(${index},-1)"
-                        ${index===0?"disabled":""}>
-                        ↑
-                    </button>
-                    <button
-                        onclick="moveOption(${index},1)"
-                        ${index===options.length-1?"disabled":""}>
-                        ↓
-                    </button>
-                    <button
-                        class="danger"
-                        onclick="deleteOption(${index})">
-                        ×
-                    </button>
-                </div>
+        const div=document.createElement("div");
+        div.className="option-card";
+        div.innerHTML=`
+        <div class="option-top">
+            <span class="option-number">
+                ${index+1}. ${escapeHTML(opt.name)}
+            </span>
+            <div class="option-actions">
+                <button
+                    onclick="moveOption(${index},-1)"
+                    ${index===0?"disabled":""}>
+                    ↑
+                </button>
+                <button
+                    onclick="moveOption(${index},1)"
+                    ${index===options.length-1?"disabled":""}>
+                    ↓
+                </button>
+                <button
+                    class="danger"
+                    onclick="deleteOption(${index})">
+                    ×
+                </button>
             </div>
-            <label>选项名称</label>
+        </div>
+        <span class="badge">
+            ${featureNames[opt.type] || "自定义功能"}
+        </span>
+        <label>选项名称</label>
+        <input
+            value="${escapeAttr(opt.name)}"
+            oninput="update(${index},'name',this.value)">
+        <div class="row">
+            <div>
+                <label>选项顺序</label>
+                <input
+                    type="number"
+                    value="${opt.order}"
+                    onchange="update(${index},'order',Number(this.value))">
+            </div>
+            <div>
+                <label>积分板分数</label>
+                <input
+                    type="number"
+                    value="${opt.score}"
+                    onchange="update(${index},'score',Number(this.value))">
+            </div>
+        </div>
+        <label>选项颜色</label>
+        <input
+            type="color"
+            value="${opt.color}"
+            onchange="update(${index},'color',this.value)">
+        ${renderFeatureSettings(opt,index)}
+        <label class="checkbox">
             <input
-                value="${escapeAttr(opt.name)}"
-                oninput="updateOption(${index},'name',this.value)">
-            <div class="row">
-                <div>
-                    <label>选项顺序</label>
-                    <input
-                        type="number"
-                        min="1"
-                        value="${opt.order}"
-                        oninput="updateOption(${index},'order',Number(this.value))">
-                </div>
-                <div>
-                    <label>积分板分数</label>
-                    <input
-                        type="number"
-                        value="${opt.score}"
-                        oninput="updateOption(${index},'score',Number(this.value))">
-                </div>
-            </div>
-            <label>选项颜色</label>
-            <div class="color-row">
-                <input
-                    type="color"
-                    value="${opt.color}"
-                    oninput="updateOption(${index},'color',this.value)">
-                <input
-                    value="${opt.color}"
-                    oninput="updateOption(${index},'color',this.value)">
-            </div>
-            <label>执行指令</label>
-            <textarea
-                oninput="updateOption(${index},'command',this.value)"
-            >${escapeHTML(opt.command)}</textarea>
-            <label class="checkbox">
-                <input
-                    type="checkbox"
-                    ${opt.enabled ? "checked" : ""}
-                    onchange="updateOption(${index},'enabled',this.checked)">
-                启用此选项
-            </label>
+                type="checkbox"
+                ${opt.enabled?"checked":""}
+                onchange="update(${index},'enabled',this.checked)">
+            启用此选项
+        </label>
         `;
         box.appendChild(div);
     });
     updatePreview();
+    generateCommands();
 }
-/* =========================
-   添加选项
-========================= */
-function addOption(){
-    const score = options.length + 1;
-    options.push({
-        name: "新选项",
-        order: score,
-        color: "#ffffff",
-        score: score,
-        command: "say 你选择了新选项",
-        enabled: true
-    });
-    selected = options.length - 1;
+/* =========================================================
+   功能设置UI
+========================================================= */
+function renderFeatureSettings(opt,index){
+    if(mode==="expert"){
+        return `
+        <label>专家模式：直接执行命令</label>
+        <textarea
+            oninput="update(${index},'command',this.value)"
+        >${escapeHTML(opt.command || "")}</textarea>
+        `;
+    }
+    if(opt.type==="teleport"){
+        const s=opt.settings;
+        return `
+        <h3>🔄 互相传送设置</h3>
+        <label>传送方式</label>
+        <select
+            onchange="setSetting(${index},'method',this.value)">
+            <option value="request"
+                ${s.method==="request"?"selected":""}>
+                请求传送
+            </option>
+            <option value="instant"
+                ${s.method==="instant"?"selected":""}>
+                立即传送
+            </option>
+            <option value="accept"
+                ${s.method==="accept"?"selected":""}>
+                接受传送
+            </option>
+        </select>
+        <label>目标玩家</label>
+        <select
+            onchange="setSetting(${index},'target',this.value)">
+            <option value="@p"
+                ${s.target==="@p"?"selected":""}>
+                最近的玩家
+            </option>
+            <option value="@a"
+                ${s.target==="@a"?"selected":""}>
+                所有玩家
+            </option>
+        </select>
+        <label class="checkbox">
+            <input
+                type="checkbox"
+                ${s.confirm?"checked":""}
+                onchange="setSetting(${index},'confirm',this.checked)">
+            需要对方确认
+        </label>
+        <label>请求有效时间（秒）</label>
+        <input
+            type="number"
+            value="${s.timeout}"
+            onchange="setSetting(${index},'timeout',Number(this.value))">
+        <label>成功提示</label>
+        <input
+            value="${escapeAttr(s.success)}"
+            oninput="setSetting(${index},'success',this.value)">
+        <label>失败提示</label>
+        <input
+            value="${escapeAttr(s.fail)}"
+            oninput="setSetting(${index},'fail',this.value)">
+        `;
+    }
+    if(opt.type==="teleportToPlayer"){
+        return `
+        <h3>📍 传送到玩家</h3>
+        <label>目标玩家</label>
+        <select
+            onchange="setSetting(${index},'target',this.value)">
+            <option value="@p">最近玩家</option>
+            <option value="@a">所有玩家</option>
+        </select>
+        `;
+    }
+    if(opt.type==="heal"){
+        return `
+        <h3>❤️ 治疗设置</h3>
+        <label>治疗对象</label>
+        <select
+            onchange="setSetting(${index},'target',this.value)">
+            <option value="@s">自己</option>
+            <option value="@p">最近玩家</option>
+        </select>
+        `;
+    }
+    if(opt.type==="gamemode"){
+        return `
+        <h3>🎮 游戏模式</h3>
+        <select
+            onchange="setSetting(${index},'mode',this.value)">
+            <option value="survival">生存模式</option>
+            <option value="creative">创造模式</option>
+            <option value="adventure">冒险模式</option>
+            <option value="spectator">旁观模式</option>
+        </select>
+        `;
+    }
+    if(opt.type==="sound"){
+        return `
+        <h3>🔊 声音</h3>
+        <label>声音名称</label>
+        <input
+            value="${escapeAttr(opt.settings.sound)}"
+            oninput="setSetting(${index},'sound',this.value)">
+        <div class="tip">
+        例如：random.levelup
+        </div>
+        `;
+    }
+    if(opt.type==="message"){
+        return `
+        <h3>💬 消息</h3>
+        <label>发送内容</label>
+        <textarea
+            oninput="setSetting(${index},'message',this.value)"
+        >${escapeHTML(opt.settings.message)}</textarea>
+        `;
+    }
+    if(opt.type==="tag"){
+        return `
+        <h3>🏷️ 标签</h3>
+        <label>标签名称</label>
+        <input
+            value="${escapeAttr(opt.settings.tag)}"
+            oninput="setSetting(${index},'tag',this.value)">
+        `;
+    }
+    if(opt.type==="custom"){
+        return `
+        <h3>🔴 自定义命令</h3>
+        <textarea
+            oninput="update(${index},'command',this.value)"
+        >${escapeHTML(opt.command)}</textarea>
+        `;
+    }
+    return "";
+}
+/* =========================================================
+   设置功能参数
+========================================================= */
+function setSetting(index,key,value){
+    options[index].settings[key]=value;
     renderOptions();
 }
-/* =========================
-   删除
-========================= */
-function deleteOption(index){
-    if(!confirm("确定删除这个菜单选项吗？"))
-        return;
-    options.splice(index,1);
-    renderOptions();
-}
-/* =========================
-   移动
-========================= */
-function moveOption(index,direction){
-    const newIndex = index + direction;
-    if(newIndex < 0 || newIndex >= options.length)
-        return;
-    const temp = options[index];
-    options[index] = options[newIndex];
-    options[newIndex] = temp;
-    options.forEach((o,i)=>{
-        o.order = i + 1;
-    });
-    renderOptions();
-}
-/* =========================
-   修改
-========================= */
-function updateOption(index,key,value){
-    options[index][key] = value;
-    updatePreview();
-}
-/* =========================
+/* =========================================================
    UI预览
-========================= */
+========================================================= */
 function updatePreview(){
-    document.getElementById("previewTitle").textContent =
+    document.getElementById("previewTitle").textContent=
         document.getElementById("menuTitle").value;
-    const box =
-        document.getElementById("previewOptions");
-    box.innerHTML = "";
-    const normal =
+    const box=document.getElementById("previewOptions");
+    box.innerHTML="";
+    const normal=
         document.getElementById("normalColor").value;
-    const selectedColor =
+    const selectedColor=
         document.getElementById("selectedColor").value;
     options
         .filter(o=>o.enabled)
         .forEach((opt,index)=>{
-            const div =
-                document.createElement("div");
-            div.className =
-                "menu-option " +
-                (index===selected ? "selected" : "");
-            div.textContent =
-                (index===selected ? "▶ " : "  ") +
+            const item=document.createElement("div");
+            item.className=
+                "mc-item "+
+                (index===selected?"selected":"");
+            item.textContent=
+                (index===selected?"▶ ":"  ")+
                 opt.name;
-            div.style.color =
+            item.style.color=
                 index===selected
-                ? selectedColor
-                : opt.color || normal;
-            div.onclick = ()=>{
-                selected = index;
+                ?selectedColor
+                :(opt.color || normal);
+            item.onclick=()=>{
+                selected=index;
                 updatePreview();
             };
-            box.appendChild(div);
+            box.appendChild(item);
         });
 }
-/* =========================
-   生成命令
-========================= */
+/* =========================================================
+   生成真正的功能命令
+========================================================= */
+function buildCommand(opt,scoreboard){
+    if(mode==="expert"){
+        return opt.command || "say 未设置命令";
+    }
+    switch(opt.type){
+        case "teleport":
+            return buildTeleport(opt,scoreboard);
+        case "teleportToPlayer":
+            return `tp @s ${opt.settings.target}`;
+        case "heal":
+            return `effect ${opt.settings.target} regeneration 5 255 true`;
+        case "clearEffects":
+            return `effect @s clear`;
+        case "gamemode":
+            return `gamemode ${opt.settings.mode} @s`;
+        case "day":
+            return `time set day`;
+        case "night":
+            return `time set night`;
+        case "clearWeather":
+            return `weather clear`;
+        case "rain":
+            return `weather rain`;
+        case "sound":
+            return `playsound ${opt.settings.sound} @s`;
+        case "particle":
+            return `particle minecraft:basic_flame_particle ~ ~1 ~`;
+        case "message":
+            return `tellraw @s {"rawtext":[{"text":"${escapeJSON(opt.settings.message)}"}]}`;
+        case "tag":
+            return `tag @s add ${opt.settings.tag}`;
+        case "kick":
+            return `kick @p`;
+        case "custom":
+            return opt.command || "say 未设置命令";
+        default:
+            return "say 未实现的功能";
+    }
+}
+/* =========================================================
+   互相传送命令
+========================================================= */
+function buildTeleport(opt,scoreboard){
+    const s=opt.settings;
+    if(s.method==="instant"){
+        return `tp @s ${s.target}`;
+    }
+    if(s.method==="accept"){
+        return `tp @s ${s.target}`;
+    }
+    /*
+      请求传送：
+      这里先生成基础的“请求状态”结构。
+      后续版本可以继续扩展成完整的30秒倒计时、
+      接受/拒绝菜单以及玩家选择界面。
+    */
+    return [
+        `tag @s add tp_requester`,
+        `tag ${s.target} add tp_target`,
+        `tellraw ${s.target} {"rawtext":[{"text":"${escapeJSON(s.success)}"}]}`
+    ].join("\n");
+}
+/* =========================================================
+   生成全部命令
+========================================================= */
 function generateCommands(){
-    const scoreboard =
+    const scoreboard=
         document.getElementById("scoreboard").value.trim()
-        || "snowmenu";
-    const title =
+        ||"snowmenu";
+    const title=
         document.getElementById("menuTitle").value;
-    const display =
+    const display=
         document.getElementById("displayMode").value;
-    const needSnowball =
-        document.getElementById("needSnowball").checked;
-    const autoClose =
+    const autoClose=
         document.getElementById("autoClose").checked;
-    let commands = [];
-    commands.push(
-        "# ========================================"
-    );
-    commands.push(
-        "# 基岩版雪球菜单生成器"
-    );
-    commands.push(
-        "# 菜单：" +
-        document.getElementById("menuName").value
-    );
-    commands.push(
-        "# ========================================"
-    );
-    commands.push("");
-    commands.push(
-        "# 创建积分板"
-    );
-    commands.push(
+    let out=[];
+    out.push("# ========================================");
+    out.push("# 基岩版雪球菜单");
+    out.push("# 菜单：" +
+        document.getElementById("menuName").value);
+    out.push("# 模式：" + mode);
+    out.push("# ========================================");
+    out.push("");
+    out.push("# ① 创建积分板");
+    out.push(
         `scoreboard objectives add ${scoreboard} dummy`
     );
-    commands.push("");
-    commands.push(
-        "# 初始化菜单"
-    );
-    commands.push(
-        `scoreboard players set @a ${scoreboard} 0`
-    );
-    commands.push("");
-    if(needSnowball){
-        commands.push(
-            "# 检测雪球"
-        );
-        commands.push(
-            `execute as @e[type=snowball] at @s run scoreboard players set @p ${scoreboard} 1`
-        );
-        commands.push("");
-    }
-    commands.push("# ========================================");
-    commands.push("# UI显示");
-    commands.push("# ========================================");
-    options
-        .filter(o=>o.enabled)
-        .forEach((opt,index)=>{
-            const text =
-                `§${minecraftColor(opt.color)}${opt.name}`;
-            if(display === "actionbar"){
-                commands.push(
-                    `execute as @a[scores={${scoreboard}=${opt.score}}] run titleraw @s actionbar {"rawtext":[{"text":"${escapeJSON(title)}\\n${escapeJSON(text)}"}]}`
-                );
-            }
-            else if(display === "title"){
-                commands.push(
-                    `execute as @a[scores={${scoreboard}=${opt.score}}] run titleraw @s title {"rawtext":[{"text":"${escapeJSON(text)}"}]}`
-                );
-            }
-            else if(display === "subtitle"){
-                commands.push(
-                    `execute as @a[scores={${scoreboard}=${opt.score}}] run titleraw @s subtitle {"rawtext":[{"text":"${escapeJSON(text)}"}]}`
-                );
-            }
-            else {
-                commands.push(
-                    `execute as @a[scores={${scoreboard}=${opt.score}}] run tellraw @s {"rawtext":[{"text":"${escapeJSON(text)}"}]}`
-                );
-            }
-        });
-    commands.push("");
-    commands.push("# ========================================");
-    commands.push("# 选项执行");
-    commands.push("# ========================================");
+    out.push("");
+    out.push("# ② 菜单显示");
     options
         .filter(o=>o.enabled)
         .forEach(opt=>{
-            let command =
-                opt.command.trim();
-            if(command.startsWith("/"))
-                command = command.substring(1);
-            commands.push(
-                `execute as @a[scores={${scoreboard}=${opt.score}}] run ${command}`
-            );
-            if(autoClose){
-                commands.push(
-                    `execute as @a[scores={${scoreboard}=${opt.score}}] run scoreboard players set @s ${scoreboard} 0`
+            let text=
+                colorToMC(opt.color)+
+                opt.name;
+            let selector=
+                `@a[scores={${scoreboard}=${opt.score}}]`;
+            if(display==="actionbar"){
+                out.push(
+                    `execute as ${selector} run titleraw @s actionbar {"rawtext":[{"text":"${escapeJSON(title)}\\n${escapeJSON(text)}"}]}`
+                );
+            }
+            else if(display==="title"){
+                out.push(
+                    `execute as ${selector} run titleraw @s title {"rawtext":[{"text":"${escapeJSON(text)}"}]}`
+                );
+            }
+            else if(display==="subtitle"){
+                out.push(
+                    `execute as ${selector} run titleraw @s subtitle {"rawtext":[{"text":"${escapeJSON(text)}"}]}`
+                );
+            }
+            else{
+                out.push(
+                    `execute as ${selector} run tellraw @s {"rawtext":[{"text":"${escapeJSON(text)}"}]}`
                 );
             }
         });
-    commands.push("");
-    commands.push("# ========================================");
-    commands.push("# 完成");
-    commands.push("# ========================================");
-    document.getElementById("commandOutput").value =
-        commands.join("\n");
+    out.push("");
+    out.push("# ③ 菜单选项执行");
+    options
+        .filter(o=>o.enabled)
+        .forEach(opt=>{
+            out.push("");
+            out.push(
+                `# [${opt.score}] ${opt.name}`
+            );
+            const command=
+                buildCommand(opt,scoreboard);
+            command
+                .split("\n")
+                .forEach(cmd=>{
+                    if(cmd.startsWith("/"))
+                        cmd=cmd.substring(1);
+                    out.push(
+                        `execute as @a[scores={${scoreboard}=${opt.score}}] run ${cmd}`
+                    );
+                });
+            if(autoClose){
+                out.push(
+                    `scoreboard players set @a[scores={${scoreboard}=${opt.score}}] ${scoreboard} 0`
+                );
+            }
+        });
+    out.push("");
+    out.push("# ========================================");
+    out.push("# ④ 菜单关闭");
+    out.push("# ========================================");
+    out.push(
+        `scoreboard players set @a ${scoreboard} 0`
+    );
+    document.getElementById("output").value=
+        out.join("\n");
 }
-/* =========================
+/* =========================================================
    复制
-========================= */
+========================================================= */
 function copyCommands(){
     generateCommands();
-    const text =
-        document.getElementById("commandOutput").value;
-    navigator.clipboard.writeText(text)
-        .then(()=>{
-            alert("命令已经复制！");
-        })
-        .catch(()=>{
-            alert("复制失败，请手动复制。");
-        });
+    navigator.clipboard
+        .writeText(
+            document.getElementById("output").value
+        )
+        .then(()=>alert("命令已经复制到剪贴板！"));
 }
-/* =========================
-   保存配置
-========================= */
-function downloadHTML(){
-    const data = {
+/* =========================================================
+   导出配置
+========================================================= */
+function downloadConfig(){
+    const data={
+        version:2,
         menuName:
             document.getElementById("menuName").value,
         scoreboard:
             document.getElementById("scoreboard").value,
-        displayMode:
-            document.getElementById("displayMode").value,
         menuTitle:
             document.getElementById("menuTitle").value,
-        options: options
+        displayMode:
+            document.getElementById("displayMode").value,
+        options:options
     };
-    const blob =
-        new Blob(
-            [JSON.stringify(data,null,2)],
-            {type:"application/json"}
-        );
-    const url =
-        URL.createObjectURL(blob);
-    const a =
-        document.createElement("a");
-    a.href = url;
-    a.download =
-        "雪球菜单配置.json";
+    const blob=new Blob(
+        [JSON.stringify(data,null,2)],
+        {type:"application/json"}
+    );
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.download="雪球菜单配置.json";
     a.click();
     URL.revokeObjectURL(url);
 }
-/* =========================
-   Minecraft颜色转换
-========================= */
-function minecraftColor(hex){
-    const colors = {
-        "000000":"0",
-        "0000AA":"1",
-        "00AA00":"2",
-        "00AAAA":"3",
-        "AA0000":"4",
-        "AA00AA":"5",
-        "FFAA00":"6",
-        "AAAAAA":"7",
-        "555555":"8",
-        "5555FF":"9",
-        "55FF55":"a",
-        "55FFFF":"b",
-        "FF5555":"c",
-        "FF55FF":"d",
-        "FFFF55":"e",
-        "FFFFFF":"f"
-    };
-    const h =
-        hex.replace("#","").toUpperCase();
-    if(colors[h])
-        return colors[h];
-    return "f";
-}
-/* =========================
-   HTML转义
-========================= */
+/* =========================================================
+   工具
+========================================================= */
 function escapeHTML(str){
     return String(str)
         .replace(/&/g,"&amp;")
@@ -719,42 +1043,56 @@ function escapeJSON(str){
         .replace(/\n/g,"\\n")
         .replace(/\r/g,"");
 }
-/* =========================
+function colorToMC(hex){
+    const map={
+        "#000000":"§0",
+        "#0000AA":"§1",
+        "#00AA00":"§2",
+        "#00AAAA":"§3",
+        "#AA0000":"§4",
+        "#AA00AA":"§5",
+        "#FFAA00":"§6",
+        "#AAAAAA":"§7",
+        "#555555":"§8",
+        "#5555FF":"§9",
+        "#55FF55":"§a",
+        "#55FFFF":"§b",
+        "#FF5555":"§c",
+        "#FF55FF":"§d",
+        "#FFFF55":"§e",
+        "#FFFFFF":"§f"
+    };
+    return map[String(hex).toUpperCase()] || "§f";
+}
+/* =========================================================
    设置监听
-========================= */
+========================================================= */
 [
     "menuName",
     "scoreboard",
-    "displayMode",
     "menuTitle",
+    "displayMode",
+    "position",
     "selectedColor",
     "normalColor",
-    "separator",
-    "needSnowball",
-    "autoClose",
-    "showScore"
+    "autoClose"
 ].forEach(id=>{
-    const el =
-        document.getElementById(id);
-    el.addEventListener("input",()=>{
-        updatePreview();
-    });
-    el.addEventListener("change",()=>{
-        updatePreview();
-    });
+    document.getElementById(id)
+        .addEventListener("input",()=>{
+            updatePreview();
+            generateCommands();
+        });
+    document.getElementById(id)
+        .addEventListener("change",()=>{
+            updatePreview();
+            generateCommands();
+        });
 });
-document
-    .getElementById("selectedColor")
-    .addEventListener("input",function(){
-        document.getElementById("selectedColorText").value =
-            this.value;
-    });
-document
-    .getElementById("normalColor")
-    .addEventListener("input",function(){
-        document.getElementById("normalColorText").value =
-            this.value;
-    });
+/* =========================================================
+   初始内容
+========================================================= */
+addFeature("teleport");
+addFeature("day");
 renderOptions();
 generateCommands();
 </script>
